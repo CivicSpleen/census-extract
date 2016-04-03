@@ -1,0 +1,30 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="10">
+            <item index="0" class="java.lang.String" itemvalue="pdfmine" />
+            <item index="1" class="java.lang.String" itemvalue="address_parser" />
+            <item index="2" class="java.lang.String" itemvalue="sqalchemy" />
+            <item index="3" class="java.lang.String" itemvalue="pypandoc" />
+            <item index="4" class="java.lang.String" itemvalue="geoid" />
+            <item index="5" class="java.lang.String" itemvalue="isodate" />
+            <item index="6" class="java.lang.String" itemvalue="ckcache" />
+            <item index="7" class="java.lang.String" itemvalue="xlrd" />
+            <item index="8" class="java.lang.String" itemvalue="beautifulsoup" />
+            <item index="9" class="java.lang.String" itemvalue="psycopg2" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
+      <option name="processCode" value="true" />
+      <option name="processLiterals" value="true" />
+      <option name="processComments" value="true" />
+    </inspection_tool>
+    <inspection_tool class="SqlNoDataSourceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>
