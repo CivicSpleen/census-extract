@@ -5,16 +5,34 @@ the Revised BSD License, included in this distribution as LICENSE.txt
 
 """
 
-def make_parser(prog_name, argsv):
+def make_parser(prog_name):
 
     import argparse
 
     parser = argparse.ArgumentParser(
         prog=prog_name,
-        description='')
+        description='Extract Census data to CSV files')
 
-    sp = parser.add_parser('run', help='Run the web user interface')
+    cmd = parser.add_subparsers(title='commands', help='command help')
+
+    sp = cmd.add_parser('run', help='Run the web user interface')
+    sp.add_argument('ref', type=str, help='Reference to  bundle to extract')
+    sp.add_argument('-r', '--remote', help="Remote name to write files to")
     sp.set_defaults(command=run_extract)
 
+    return parser
+
+def get_library(args):
+
+    from ambry import get_library
+
+    return get_library()
+
+
 def run_extract(args):
-    print "here", args
+    from . import write_csv
+
+    library = get_library(args)
+
+    write_csv(library, args.ref, args.remote)
+
