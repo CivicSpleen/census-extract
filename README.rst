@@ -90,18 +90,18 @@ So your final :file:``remotes.yaml`` might look like this, if you add both:
 
 .. code-block:: yaml
 
-remotes:
-    census:
-        service: http
-        url: https://s3.amazonaws.com/census.public.civicknowledge.com/
-    census-dest-fs:
-        service: fs
-        url: /tmp/census
-    census-dest-s3:
-        service: s3
-        access: XGL3FAAKIEV6AI3LPMGD
-        secret: E55i6oBwrqNfqLHIXHWmR+jXRl1B+nvEclXJeN5l
-        url: s3://extracts.census.civicknowledge.com
+    remotes:
+        census:
+            service: http
+            url: https://s3.amazonaws.com/census.public.civicknowledge.com/
+        census-dest-fs:
+            service: fs
+            url: /tmp/census
+        census-dest-s3:
+            service: s3
+            access: XGL3FAAKIEV6AI3LPMGD
+            secret: E55i6oBwrqNfqLHIXHWmR+jXRl1B+nvEclXJeN5l
+            url: s3://extracts.census.civicknowledge.com
 
 Then, run :command:``ambry info`` to re-load the remotes. 
 
