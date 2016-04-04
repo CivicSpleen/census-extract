@@ -20,6 +20,7 @@ To run these scripts, you must:
 # Add a remote for the census bundles
 # Sync the census bundles
 # Create a remote to write the CSV files to
+# Install the census-extract python package
 
 Install Ambry
 -------------
@@ -35,7 +36,7 @@ The [Ambry installation guide](http://docs.ambry.io/) has details for many platf
 Add Census Remote
 -----------------
 
-After installing Ambry, you should be able to run :command:`ambry info` to get the configuration information. The line for 'Config:' shows the location of your configuration file, and in the same directory, you can create a configuration for remotes, which holds information about 
+After installing Ambry, you should be able to run ``ambry info`` to get the configuration information. The line for 'Config:' shows the location of your configuration file, and in the same directory, you can create a configuration for remotes, which holds information about 
 
 .. code-block:: yaml
 
@@ -44,12 +45,12 @@ After installing Ambry, you should be able to run :command:`ambry info` to get t
             service: http
             url: https://s3.amazonaws.com/census.public.civicknowledge.com/
 
-Then run :command:`ambry info` to cause the remotes to be reloaded. You should see 'census' in the 'remotes' section. 
+Then run ``ambry info`` to cause the remotes to be reloaded. You should see 'census' in the 'remotes' section. 
 
 Sync Census Bundles
 -------------------
 
-To sync the census bundles, run :command:`ambry sync census`. It should run for a few minutes, and when it is done, :command:`ambry list` should show census bundles. 
+To sync the census bundles, run ``ambry sync census``. It should run for a few minutes, and when it is done, ``ambry list`` should show census bundles. 
 
 .. code-block:: bash
 
@@ -73,7 +74,7 @@ Create remote for Destination
 
 Finally, you should create a remote entrry for the destination of the CSV file. This could either be a local file system, or an S3 bucket. 
 
-Add one or both of these two inner blocks to your :file:`remotes.yaml` file.
+Add one or both of these two inner blocks to your ``remotes.yaml`` file.
 
 .. code-block:: yaml
 
@@ -85,21 +86,27 @@ Add one or both of these two inner blocks to your :file:`remotes.yaml` file.
             service: fs
             url: https://s3.amazonaws.com/census.public.civicknowledge.com/
 
-So your final :file:`remotes.yaml` might look like this, if you add both:
+So your final :file:``remotes.yaml`` might look like this, if you add both:
 
 .. code-block:: yaml
 
-    remotes:
-        census:
-            service: http
-            url: https://s3.amazonaws.com/census.public.civicknowledge.com/
-        census-dest-fs:
-            service: fs
-            url: /tmp/census
-        census-dest-s3:
-            service: s3
-            access: XGL3FAAKIEV6AI3LPMGD
-            secret: E55i6oBwrqNfqLHIXHWmR+jXRl1B+nvEclXJeN5l
-            url: s3://extracts.census.civicknowledge.com
+remotes:
+    census:
+        service: http
+        url: https://s3.amazonaws.com/census.public.civicknowledge.com/
+    census-dest-fs:
+        service: fs
+        url: /tmp/census
+    census-dest-s3:
+        service: s3
+        access: XGL3FAAKIEV6AI3LPMGD
+        secret: E55i6oBwrqNfqLHIXHWmR+jXRl1B+nvEclXJeN5l
+        url: s3://extracts.census.civicknowledge.com
 
-Then, run :command:`ambry info` to re-load the remotes. 
+Then, run :command:``ambry info`` to re-load the remotes. 
+
+Install census-extract
+----------------------
+
+
+
