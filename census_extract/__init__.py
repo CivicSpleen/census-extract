@@ -25,6 +25,8 @@ def get_geo(geofile_b, release, sl):
 
     geo_p = geofile_b.partition(grain=str(sl), time='{}{}'.format(geofile_b.identity.btime, release))
 
+    geo_p.localize()
+
     ig = None
     col_dicts = None
 
@@ -74,7 +76,6 @@ def write_csv(library, ref, remote_name=None, multi=True, raise_exc=False):
     :param raise_exc:
     :return:
     """
-
 
     remote_name = remote_name or 'census-extracts'
     b = library.bundle(ref)
@@ -131,6 +132,8 @@ def write_partition_csv(library, remote, b, p):
     from os.path import dirname
     from operator import itemgetter
 
+    delete_when_finished = False
+
     year = b.identity.btime[-4:]
     release = b.identity.btime[1:2]
 
@@ -147,7 +150,11 @@ def write_partition_csv(library, remote, b, p):
 
     library.logger.info('Loading: {}'.format(p.vname))
 
-    p.localize()
+    # Can't use http service to access remote datafiles, because the MPR file code requires tell()
+    if not p.is_local and p.remote.url.startswith('http'):
+        library.logger.info('Localizing: {}'.format(p.vname))
+        p.localize()
+        delete_when_finished = True
 
     cols = ([u'stusab', u'logrecno'] + [unicode(c.name) for c in p.table.columns if c.name not in
                                         ('id', 'stusab', 'sequence', 'logrecno', 'gvid', 'sumlevel', 'jam_flags',
@@ -199,3 +206,7 @@ def write_partition_csv(library, remote, b, p):
                     w.writerow(geocols + cols[2:])
 
                 w.writerow(tuple(geo_row.values()) + row[2:])
+
+    if delete_when_finished:
+        library.logger.info('Removing localized partition: {}'.format(p.vname))
+        p.datafile.remove()
