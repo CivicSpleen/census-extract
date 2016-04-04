@@ -55,7 +55,7 @@ To sync the census bundles, run ``ambry sync census``. It should run for a few m
 .. code-block:: bash
 
     $ ambry list 
-    ambry list 
+
     vid      vname                                       dstate        bstate  about.title                             
     -------  ------------------------------------------  ----------  --------  --------------------------------------  
     d04w002  census.gov-acs-geofile-2009-0.0.2           checkedout            American Community Survey Geofile 2009  
@@ -108,5 +108,7 @@ Then, run :command:``ambry info`` to re-load the remotes.
 Install census-extract
 ----------------------
 
+.. code-block:: bash
 
+    pip install git+https://github.com/CivicKnowledge/census-extract.git
 

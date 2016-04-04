@@ -1,6 +1,4 @@
-
 def main(argsv):
-
     from cli import make_parser
 
     parser = make_parser(argsv[0])
@@ -8,6 +6,7 @@ def main(argsv):
     args = parser.parse_args(argsv[1:])
 
     args.command(args)
+
 
 def get_geo(geofile_b, release, sl):
     from operator import itemgetter
@@ -44,12 +43,13 @@ def get_geo(geofile_b, release, sl):
 
     return geo[sl]
 
-def write_schema(sumlevel,  geo_cols,  acs_cols, dir_, remote):
+
+def write_schema(sumlevel, geo_cols, acs_cols, dir_, remote):
     import unicodecsv as csv
     from operator import itemgetter
     from os.path import join
 
-    header = ('name','schema_type', 'description')
+    header = ('name', 'schema_type', 'description')
 
     ig = itemgetter(*header)
 
@@ -58,13 +58,22 @@ def write_schema(sumlevel,  geo_cols,  acs_cols, dir_, remote):
     with remote.fs.open(file_name, 'wb') as f:
         w = csv.writer(f)
 
-        w.writerow(('position',)+header)
+        w.writerow(('position',) + header)
 
-        for i, e in enumerate(geo_cols + acs_cols,1):
-            w.writerow((i,)+ig(e))
+        for i, e in enumerate(geo_cols + acs_cols, 1):
+            w.writerow((i,) + ig(e))
 
-def write_csv(library, ref, remote_name=None, multi=True):
-    """Write CSV extracts to a remote"""
+
+def write_csv(library, ref, remote_name=None, multi=True, raise_exc=False):
+    """
+    Write CSV extracts to a remote
+    :param library:
+    :param ref:
+    :param remote_name:
+    :param multi:
+    :param raise_exc:
+    :return:
+    """
 
     remote_name = remote_name or 'census-extracts'
     b = library.bundle(ref)
@@ -77,11 +86,11 @@ def write_csv(library, ref, remote_name=None, multi=True):
 
         pool = Pool()
 
-        args = [(remote_name, b.identity.vid, p.vid) for p in b.partitions]
+        args = [(remote_name, b.identity.vid, p.vid, raise_exc) for p in b.partitions]
         library.close()
         b.close()
 
-        pool.map(write_partition_csv_mp,args)
+        pool.map(write_partition_csv_mp, args)
 
     else:
 
@@ -92,11 +101,13 @@ def write_csv(library, ref, remote_name=None, multi=True):
                 write_partition_csv(library, remote, b, p)
             except Exception as e:
                 library.logger.error(e)
+                if raise_exc:
+                    raise
 
 
 def write_partition_csv_mp(args):
     from ambry import get_library
-    remote_name, b_ref, p_ref = args
+    remote_name, b_ref, p_ref, raise_exc = args
 
     library = get_library()
     remote = library.remote(remote_name)
@@ -107,6 +118,8 @@ def write_partition_csv_mp(args):
         write_partition_csv(library, remote, b, p)
     except Exception as e:
         library.logger.error(e)
+        if raise_exc:
+            raise
 
 
 def write_partition_csv(library, remote, b, p):
@@ -120,10 +133,10 @@ def write_partition_csv(library, remote, b, p):
 
     geofile_b = library.bundle("census.gov-acs-geofile-{}".format(year))
 
-    sum_levels = set([ int(pp.identity.grain) for pp in geofile_b.partitions
+    sum_levels = set([int(pp.identity.grain) for pp in geofile_b.partitions
                       if pp.identity.grain and pp.identity.time == "{}{}".format(year, release)
-                        and int(pp.identity.grain) not in (10, 20, 30, 314, 250, 335, 350, 355)
-                      ]) # summary levels
+                      and int(pp.identity.grain) not in (10, 20, 30, 314, 250, 335, 350, 355)
+                      ])  # summary levels
 
     rows = defaultdict(list)
 
@@ -134,13 +147,14 @@ def write_partition_csv(library, remote, b, p):
     p.localize()
 
     cols = ([u'stusab', u'logrecno'] + [unicode(c.name) for c in p.table.columns if c.name not in
-           ('id', 'stusab', 'sequence', 'logrecno', 'gvid', 'sumlevel', 'jam_flags', 'geoid')])
+                                        ('id', 'stusab', 'sequence', 'logrecno', 'gvid', 'sumlevel', 'jam_flags',
+                                         'geoid')])
 
     ig = itemgetter(*cols)
 
     for n, sumlevel in enumerate(sorted(sum_levels)):
 
-        file_name = "{}/{}/{}/{}.csv".format(year,release, table_name, sumlevel)
+        file_name = "{}/{}/{}/{}.csv".format(year, release, table_name, sumlevel)
 
         if remote.fs.exists(file_name):
             library.logger.info("{} exists, skipping".format(file_name))
@@ -176,11 +190,9 @@ def write_partition_csv(library, remote, b, p):
                 geo_row = geo[geo_key]
 
                 if i == 0:
-
-                    write_schema(sumlevel,  geo_col_dicts, [p.table.column(c).dict for c in cols[2:]],
+                    write_schema(sumlevel, geo_col_dicts, [p.table.column(c).dict for c in cols[2:]],
                                  dir_, remote)
 
                     w.writerow(geocols + cols[2:])
 
-                w.writerow(tuple(geo_row.values())+row[2:])
-
+                w.writerow(tuple(geo_row.values()) + row[2:])
