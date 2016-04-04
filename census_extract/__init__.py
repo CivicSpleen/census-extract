@@ -75,8 +75,11 @@ def write_csv(library, ref, remote_name=None, multi=True, raise_exc=False):
     :return:
     """
 
+
     remote_name = remote_name or 'census-extracts'
     b = library.bundle(ref)
+
+    multi = library.dsn.startswith('post')
 
     if multi:
 

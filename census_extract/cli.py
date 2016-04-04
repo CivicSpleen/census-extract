@@ -19,7 +19,7 @@ def make_parser(prog_name):
     sp.add_argument('ref', type=str, help='Reference to  bundle to extract')
     sp.add_argument('-r', '--remote', help="Remote name to write files to")
     sp.add_argument('-e', '--exception', default=False, action='store_true',
-                    help="Re-raise exceptoins after remorting them")
+                    help="Re-raise exceptions after remorting them")
     sp.set_defaults(command=run_extract)
 
     return parser
@@ -36,5 +36,6 @@ def run_extract(args):
 
     library = get_library(args)
 
-    write_csv(library, args.ref, args.remote, args.exception)
+
+    write_csv(library, args.ref, args.remote, raise_exc=args.exception)
 
