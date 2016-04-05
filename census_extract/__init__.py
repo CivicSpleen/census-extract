@@ -218,23 +218,22 @@ def write_partition_csv(library, remote, b, p):
 
         geocols = geo[geo.keys()[0]].keys()
 
-        if False:
 
-            with remote.fs.open(file_name, 'wb') as f:
-                w = csv.writer(f)
+        with remote.fs.open(file_name, 'wb') as f:
+            w = csv.writer(f)
 
-                for i, row in enumerate(rows[sumlevel]):
+            for i, row in enumerate(rows[sumlevel]):
 
-                    geo_key = "{}/{}".format(row[0], row[1])
-                    geo_row = geo[geo_key]
+                geo_key = "{}/{}".format(row[0], row[1])
+                geo_row = geo[geo_key]
 
-                    if i == 0:
-                        write_schema(sumlevel, geo_col_dicts, [p.table.column(c).dict for c in cols[2:]],
-                                     dir_, remote)
+                if i == 0:
+                    write_schema(sumlevel, geo_col_dicts, [p.table.column(c).dict for c in cols[2:]],
+                                 dir_, remote)
 
-                        w.writerow(geocols + cols[2:])
+                    w.writerow(geocols + cols[2:])
 
-                    w.writerow(tuple(geo_row.values()) + row[2:])
+                w.writerow(tuple(geo_row.values()) + row[2:])
 
     write_sumlevels(remote, year, release, file_name, used_names)
 
