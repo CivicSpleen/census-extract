@@ -150,11 +150,6 @@ def write_partition_csv(library, remote, b, p):
 
     library.logger.info('Loading: {}'.format(p.vname))
 
-    # Can't use http service to access remote datafiles, because the MPR file code requires tell()
-    if not p.is_local and p.remote.url.startswith('http'):
-        library.logger.info('Localizing: {}'.format(p.vname))
-        p.localize()
-        delete_when_finished = True
 
     cols = ([u'stusab', u'logrecno'] + [unicode(c.name) for c in p.table.columns if c.name not in
                                         ('id', 'stusab', 'sequence', 'logrecno', 'gvid', 'sumlevel', 'jam_flags',
@@ -171,6 +166,13 @@ def write_partition_csv(library, remote, b, p):
             continue
 
         if not rows:
+
+            # Can't use http service to access remote datafiles, because the MPR file code requires tell()
+            if not p.is_local and p.remote.url.startswith('http'):
+                library.logger.info('Localizing: {}'.format(p.vname))
+                p.localize()
+                delete_when_finished = True
+
             library.logger.info("Loading rows")
             for row in p:
                 rows[row.sumlevel].append(ig(row))
