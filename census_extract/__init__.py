@@ -126,11 +126,32 @@ def write_partition_csv_mp(args):
             raise
 
 
+def write_sumlevels(remote, year, release, file_name, sl_names):
+    """Write a json file of all of the available summary levels. """
+    from json import loads, dumps
+
+    file_name = "{}/{}/sumlevels.json".format(year, release)
+
+    if remote.fs.exists(file_name):
+        names = set(loads(remote.fs.getcontents(file_name)))
+    else:
+        names = set()
+
+    names |= sl_names
+
+    remote.fs.setcontents(file_name, dumps(sorted(names)))
+
+
 def write_partition_csv(library, remote, b, p):
     from collections import defaultdict
     import unicodecsv as csv
     from os.path import dirname
     from operator import itemgetter
+    from geoid import names as geo_names
+
+    geo_names_map = { v:k for k,v in geo_names.items()}
+
+    used_names = set()
 
     delete_when_finished = False
 
@@ -141,7 +162,7 @@ def write_partition_csv(library, remote, b, p):
 
     sum_levels = set([int(pp.identity.grain) for pp in geofile_b.partitions
                       if pp.identity.grain and pp.identity.time == "{}{}".format(year, release)
-                      and int(pp.identity.grain) not in (10, 20, 30, 314, 250, 335, 350, 355)
+                      and int(pp.identity.grain) not in (10, 20, 30, 250, 335, 350, 355)
                       ])  # summary levels
 
     rows = defaultdict(list)
@@ -159,7 +180,11 @@ def write_partition_csv(library, remote, b, p):
 
     for n, sumlevel in enumerate(sorted(sum_levels)):
 
-        file_name = "{}/{}/{}/{}.csv".format(year, release, table_name, sumlevel)
+        sl_name = "{}_{}".format(sumlevel, geo_names_map[sumlevel])
+
+        used_names.add(sl_name)
+
+        file_name = "{}/{}/{}/{}.csv".format(year, release, sl_name, table_name)
 
         if remote.fs.exists(file_name):
             library.logger.info("{} exists, skipping".format(file_name))
@@ -193,21 +218,26 @@ def write_partition_csv(library, remote, b, p):
 
         geocols = geo[geo.keys()[0]].keys()
 
-        with remote.fs.open(file_name, 'wb') as f:
-            w = csv.writer(f)
+        if False:
 
-            for i, row in enumerate(rows[sumlevel]):
+            with remote.fs.open(file_name, 'wb') as f:
+                w = csv.writer(f)
 
-                geo_key = "{}/{}".format(row[0], row[1])
-                geo_row = geo[geo_key]
+                for i, row in enumerate(rows[sumlevel]):
 
-                if i == 0:
-                    write_schema(sumlevel, geo_col_dicts, [p.table.column(c).dict for c in cols[2:]],
-                                 dir_, remote)
+                    geo_key = "{}/{}".format(row[0], row[1])
+                    geo_row = geo[geo_key]
 
-                    w.writerow(geocols + cols[2:])
+                    if i == 0:
+                        write_schema(sumlevel, geo_col_dicts, [p.table.column(c).dict for c in cols[2:]],
+                                     dir_, remote)
 
-                w.writerow(tuple(geo_row.values()) + row[2:])
+                        w.writerow(geocols + cols[2:])
+
+                    w.writerow(tuple(geo_row.values()) + row[2:])
+
+    write_sumlevels(remote, year, release, file_name, used_names)
+
 
     if delete_when_finished:
         library.logger.info('Removing localized partition: {}'.format(p.vname))
