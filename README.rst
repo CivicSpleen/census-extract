@@ -3,9 +3,7 @@ Census Extract
 
 The scripts in this python module will upload an Ambry bundle for a release of the Amberican Community Survey to a directory or S3 bucket as CSV files, with one file per summary level per table. The file will also include columns for the non-null values from the geofile. 
 
-To run these scripts, you must first [install Ambry](http://docs.ambry.io/) and configure it with the ACS bundle remote, and a remote for the CSV files to be written to. 
-
-However, most users should just use the CSV files that are already written to a public S3 bucket. 
+To run these scripts, you must first [install Ambry](http://docs.ambry.io/) and configure it with the ACS bundle remote, and a remote for the CSV files to be written to. However, most users should just use the CSV files that are already written to a public S3 bucket. 
 
 Using The Public S3 Files
 *************************
@@ -23,10 +21,16 @@ The path components are:
 
 * year. The year of the ACS release
 * release_span. The release span in years, 5, 3 or 1 for releases prior ro 2014, 5 or 1 after. 
-* summary_level. A name that combines the summary level number with a short name. 
+* summary_level. A name that combines the summary level number with a short name. See the next section for possible values. 
+* table. The name of the table. 
+
+Additionally, every summary level has a CSV file for a data dictionary, at ``<table>-schema.csv``
 
 Summary Level Path Component
 ----------------------------
+
+1 Year Release Summary Level Names
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ===============  =====================  ===================================================
   Summary Level  Path Component         Description
@@ -49,8 +53,6 @@ Summary Level Path Component
 ===============  =====================  ===================================================
 
 
-
-
 Running the Scripts
 *******************
 
@@ -61,6 +63,7 @@ To run these scripts, you must:
 # Sync the census bundles
 # Create a remote to write the CSV files to
 # Install the census-extract python package
+# Run the census-extract program
 
 Install Ambry
 -------------
@@ -139,8 +142,8 @@ So your final :file:``remotes.yaml`` might look like this, if you add both:
             url: /tmp/census
         census-dest-s3:
             service: s3
-            access: XGL3FAAKIEV6AI3LPMGD
-            secret: E55i6oBwrqNfqLHIXHWmR+jXRl1B+nvEclXJeN5l
+            access: <your access key>
+            secret: <your secret key>
             url: s3://extracts.census.civicknowledge.com
 
 Then, run :command:``ambry info`` to re-load the remotes. 
@@ -151,4 +154,19 @@ Install census-extract
 .. code-block:: bash
 
     pip install git+https://github.com/CivicKnowledge/census-extract.git
+
+
+Run The Census-extract program
+------------------------------
+
+First, list the ambry bundles with ``ambry list`` to get the reference name to an ACS bundle. The bundle should have a name like ``census.gov-acs-p1ye2014-0.0.2``. Then, run the ``census-extract`` program with the name. 
+
+Run ``census-extract run -h`` for command options. 
+
+
+.. code-block:: bash
+
+    census-extract run census.gov-acs-p1ye2014 -r census-dest-s3 -e -m
+
+
 
