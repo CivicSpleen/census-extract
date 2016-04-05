@@ -13,18 +13,20 @@ The easiest way to explore the file collection is through the bucket explorer, w
     https://s3.amazonaws.com/extracts.census.civicknowledge.com/index.html
     
     
-THe URL structure for files is: 
+The URL structure for files is: 
 
     <year>/<release_span>/<summary_level>/<table>.csv  
 
 The path components are: 
 
 * year. The year of the ACS release
-* release_span. The release span in years, 5, 3 or 1 for releases prior ro 2014, 5 or 1 after. 
+* release_span. The release span in years, 5, 3 or 1 for releases prior to 2014, 5 or 1 after. 
 * summary_level. A name that combines the summary level number with a short name. See the next section for possible values. 
 * table. The name of the table. 
 
 Additionally, every summary level has a CSV file for a data dictionary, at ``<table>-schema.csv``
+
+
 
 Summary Level Path Component
 ----------------------------
