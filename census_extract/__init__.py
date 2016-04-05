@@ -46,7 +46,7 @@ def get_geo(geofile_b, release, sl):
     return geo[sl]
 
 
-def write_schema(sumlevel, geo_cols, acs_cols, dir_, remote):
+def write_schema(table, geo_cols, acs_cols, dir_, remote):
     import unicodecsv as csv
     from operator import itemgetter
     from os.path import join
@@ -55,7 +55,7 @@ def write_schema(sumlevel, geo_cols, acs_cols, dir_, remote):
 
     ig = itemgetter(*header)
 
-    file_name = join(dir_, '{}-schema.csv'.format(sumlevel))
+    file_name = join(dir_, '{}-schema.csv'.format(table))
 
     with remote.fs.open(file_name, 'wb') as f:
         w = csv.writer(f)
@@ -228,7 +228,7 @@ def write_partition_csv(library, remote, b, p):
                 geo_row = geo[geo_key]
 
                 if i == 0:
-                    write_schema(sumlevel, geo_col_dicts, [p.table.column(c).dict for c in cols[2:]],
+                    write_schema(table_name, geo_col_dicts, [p.table.column(c).dict for c in cols[2:]],
                                  dir_, remote)
 
                     w.writerow(geocols + cols[2:])

@@ -10,6 +10,43 @@ However, most users should just use the CSV files that are already written to a 
 Using The Public S3 Files
 *************************
 
+The easiest way to explore the file collection is through the bucket explorer, which is avilable at the URL: 
+
+    https://s3.amazonaws.com/extracts.census.civicknowledge.com/index.html
+    
+    
+THe URL structure for files is: 
+
+    <year>/<release_span>/<summary_level>/<table>.csv  
+
+The path components are: 
+
+* year. The year of the ACS release
+* release_span. The release span in years, 5, 3 or 1 for releases prior ro 2014, 5 or 1 after. 
+* summary_level. A name that combines the summary level number with a short name. 
+
+Summary Level Path Component
+----------------------------
+
+===============  =====================  ===================================================
+  Summary Level  Path Component         Description
+===============  =====================  ===================================================
+             40  40_state               State
+             50  50_county              County
+             60  60_cosub               County Subdivision
+            160  160_place              Place
+            230  230_state_anrc         State-Alaska Native Regional Corporation
+            310  310_cbsa               CBSA
+            312  312_cbsa_state_place   CBSA-State-Principal City
+            330  330_csa                Combined Statistical Area
+            352  352_necta_state_place  New England City and Town Area-State-Principal City
+            400  400_ua                 Urban Area,
+            500  500_cdcurr             Congressional District
+            795  795_state_puma5        State-Public Use MicroSample Area 5%
+            950  950_sdelm              State-Elementary School District
+            960  960_sdsec              State-High School District
+            970  970_sduni              State-Unified School District
+===============  =====================  ===================================================
 
 
 
