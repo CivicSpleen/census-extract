@@ -66,7 +66,7 @@ def write_schema(table, geo_cols, acs_cols, dir_, remote):
             w.writerow((i,) + ig(e))
 
 
-def write_csv(library, ref, remote_name=None, multi=True, raise_exc=False):
+def write_csv(library, ref, remote_name=None, multi=False, raise_exc=False):
     """
     Write CSV extracts to a remote
     :param library:
@@ -80,7 +80,6 @@ def write_csv(library, ref, remote_name=None, multi=True, raise_exc=False):
     remote_name = remote_name or 'census-extracts'
     b = library.bundle(ref)
 
-    multi = library.dsn.startswith('post')
 
     if multi:
 
