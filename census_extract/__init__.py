@@ -179,6 +179,10 @@ def write_partition_csv(library, remote, b, p):
 
     for n, sumlevel in enumerate(sorted(sum_levels)):
 
+        if sumlevel not in geo_names_map:
+            library.logger.warn('Unknown summary level number {}; skipping'.format(sumlevel))
+            continue
+
         sl_name = "{}_{}".format(sumlevel, geo_names_map[sumlevel])
 
         used_names.add(sl_name)
