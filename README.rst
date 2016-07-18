@@ -59,7 +59,7 @@ Running the Scripts
 
 To run these scripts, you must: 
 
-1. [Install Ambry](http://docs.ambry.io/)
+1. `Install Ambry <http://docs.ambry.io/>`
 2. Add a remote for the census bundles
 3. Sync the census bundles
 4. Create a remote to write the CSV files to
@@ -69,7 +69,7 @@ To run these scripts, you must:
 Install Ambry
 -------------
 
-The [Ambry installation guide](http://docs.ambry.io/) has details for many platforms, but if you are writing to S3, you'll probably want to create a new Amazon S3 instance. In that case, create a new Ubuntu 14.04 instance, and then you can run this: 
+The `Ambry installation guide <http://docs.ambry.io/>`_  has details for many platforms, but if you are writing to S3, you'll probably want to create a new Amazon S3 instance. In that case, create a new Ubuntu 14.04 instance, and then you can run this: 
 
 .. code-block:: bash
 
