@@ -60,12 +60,12 @@ Running the Scripts
 
 To run these scripts, you must: 
 
-# [Install Ambry](http://docs.ambry.io/)
-# Add a remote for the census bundles
-# Sync the census bundles
-# Create a remote to write the CSV files to
-# Install the census-extract python package
-# Run the census-extract program
+1. [Install Ambry](http://docs.ambry.io/)
+2. Add a remote for the census bundles
+3. Sync the census bundles
+4. Create a remote to write the CSV files to
+5. Install the census-extract python package
+6. Run the census-extract program
 
 Install Ambry
 -------------
