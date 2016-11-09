@@ -6,6 +6,15 @@ included in this distribution as LICENSE
 """
 
 import sys
-from . import main
+
+def main(argsv):
+    from cli import make_parser
+
+    parser = make_parser(argsv[0])
+
+    args = parser.parse_args(argsv[1:])
+
+    args.command(args)
+
 
 main(sys.argv)

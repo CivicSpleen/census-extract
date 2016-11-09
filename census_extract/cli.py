@@ -34,7 +34,7 @@ def get_library(args):
 
 
 def run_extract(args):
-    from . import write_csv
+    from extract import write_csv
 
     library = get_library(args)
 
